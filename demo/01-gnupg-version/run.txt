@@ -1,0 +1,55 @@
+===================== bash cell | show gpg program version =====================
+
+gpg --version
+
+--------------------------------- cell outputs ---------------------------------
+gpg (GnuPG) 2.2.27
+libgcrypt 1.9.4
+Copyright (C) 2021 Free Software Foundation, Inc.
+License GNU GPL-3.0-or-later <https://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Home: /mnt/gnupg-api/.gnupg-runtime/.gnupg
+Supported algorithms:
+Pubkey: RSA, ELG, DSA, ECDH, ECDSA, EDDSA
+Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,
+        CAMELLIA128, CAMELLIA192, CAMELLIA256
+Hash: SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
+Compression: Uncompressed, ZIP, ZLIB, BZIP2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+================= bash cell | show gnupg package installation ==================
+
+pip show gnupg
+
+--------------------------------- cell outputs ---------------------------------
+Name: gnupg
+Version: 2.3.1
+Summary: A Python wrapper for GnuPG
+Home-page: https://github.com/isislovecruft/python-gnupg
+Author: Isis Agora Lovecruft
+Author-email: isis@patternsinthevoid.net
+License: GPLv3+
+Location: /home/repro/.local/lib/python3.10/site-packages
+Requires: psutil
+Required-by: 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+==================== bash cell | load gnupg python package =====================
+
+python3 << END_PYTHON
+
+import gnupg
+print(gnupg)
+
+END_PYTHON
+
+
+--------------------------------- cell outputs ---------------------------------
+<module 'gnupg' from '/home/repro/.local/lib/python3.10/site-packages/gnupg/__init__.py'>
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
