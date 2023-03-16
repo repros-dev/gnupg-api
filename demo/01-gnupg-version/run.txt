@@ -43,13 +43,13 @@ Required-by:
 python3 << END_PYTHON
 
 import gnupg
-print(gnupg)
+print(gnupg.__package__, gnupg.__version__,  gnupg.__file__)
 
 END_PYTHON
 
 
 --------------------------------- cell outputs ---------------------------------
-<module 'gnupg' from '/home/repro/.local/lib/python3.10/site-packages/gnupg/__init__.py'>
+gnupg 2.3.1 /home/repro/.local/lib/python3.10/site-packages/gnupg/__init__.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 

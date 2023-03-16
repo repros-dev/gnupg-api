@@ -23,7 +23,7 @@ bash_cell 'load gnupg python package' << END_CELL
 python3 << END_PYTHON
 
 import gnupg
-print(gnupg)
+print(gnupg.__package__, gnupg.__version__,  gnupg.__file__)
 
 END_PYTHON
 
