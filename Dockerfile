@@ -7,4 +7,6 @@ RUN bash /repro/dist/boot-setup
 
 USER repro
 
+RUN repro.require gnupg-api exports
+
 CMD  /bin/bash -il
