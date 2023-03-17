@@ -1,0 +1,104 @@
+============= bash cell | delete the gnupg home directory and keys =============
+
+# delete contents of GnuPG home directory for this REPRO
+gnupg-runtime.purge-keys
+
+--------------------------------- cell outputs ---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+============ bash cell | import the public key for repro@repros.dev ============
+
+python3 << END_PYTHON
+
+import pretty_bad_protocol as gnupg
+import os
+
+gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+
+with open("data/public.gpg", "r") as public_key_file:
+    public_key_text = public_key_file.read()
+gpg.import_keys(public_key_text)
+
+public_keys = gpg.list_keys()
+assert len(public_keys) == 1
+public_key = public_keys[0]
+
+print("uids        =", public_key['uids'][0])
+print("fingerprint =", public_key['fingerprint'])
+
+END_PYTHON
+
+--------------------------------- cell outputs ---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+=================== bash cell | list the imported public key ===================
+
+# list the gpg keys
+echo
+gpg --list-keys
+
+--------------------------------- cell outputs ---------------------------------
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+=============== bash cell | encrypt a file using the public key ================
+
+python3 << END_PYTHON
+
+import gnupg
+import os
+
+gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+
+with open("data/message.txt", "r") as message_file:
+    message = message_file.read()
+
+print(message)
+
+encrypted_message = gpg.encrypt(message, 'A168CC1B1D30CC9D079AD5FEA34F78D2B23714E8')
+
+with open("tmp/encrypted_message.asc", "w") as text_file:
+    text_file.write(str(encrypted_message))
+
+END_PYTHON
+
+gnupg-runtime.redact-key tmp/encrypted_message.asc
+
+--------------------------------- cell outputs ---------------------------------
+Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor
+incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+=========== bash cell | import the private key for repro@repros.dev ============
+
+# import the private key file
+gpg --import --pinentry-mode loopback --passphrase=repro data/private.asc 2>&1
+
+# list the gpg keys
+gpg --list-keys
+
+--------------------------------- cell outputs ---------------------------------
+gpg: key A34F78D2B23714E8: public key "repro user <repro@repros.dev>" imported
+gpg: key A34F78D2B23714E8: secret key imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1
+/mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.gpg
+------------------------------------------------
+pub   rsa1024 2023-03-14 [SCEA]
+      A168CC1B1D30CC9D079AD5FEA34F78D2B23714E8
+uid           [ unknown] repro user <repro@repros.dev>
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
