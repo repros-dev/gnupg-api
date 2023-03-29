@@ -21,18 +21,15 @@ bash_cell 'import the public key for repro@repros.dev' << END_CELL
 python3 << END_PYTHON
 
 import gnupg
-import os
 
-gpg = gnupg.GPG()
-
+# read the public key from the file
 with open("${PUBLIC_KEY_FILE}", "r") as public_key_file:
     public_key_text = public_key_file.read()
-gpg.import_keys(public_key_text)
 
-public_keys = gpg.list_keys()
-assert len(public_keys) == 1
-public_key = public_keys[0]
-gpg.trust_keys(public_key['fingerprint'], 'TRUST_ULTIMATE')
+# import the public key and trust it
+gpg = gnupg.GPG()
+gpg.import_keys(public_key_text)
+gpg.trust_keys('D13483D074B46132D15258655434DE21A921F55F', 'TRUST_ULTIMATE')
 
 END_PYTHON
 
@@ -40,10 +37,8 @@ END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'list the imported public key using gpg command' << END_CELL
+bash_cell 'list the imported public key using the gpg cli' << END_CELL
 
-# list the gpg keys
-echo
 gpg --list-keys
 
 END_CELL
@@ -56,23 +51,19 @@ bash_cell 'encrypt a file using the public key' << END_CELL
 python3 << END_PYTHON
 
 import gnupg
-import os
 
-gpg = gnupg.GPG()
-
-gpg.import_keys_file("${PUBLIC_KEY_FILE}")
-public_key = gpg.list_keys()[0]
-
+# read the message from a file
 with open("${MESSAGE_FILE}", "r") as message_file:
     message = message_file.read()
 print(message)
 
+# use the public key to encrypt the message
+gpg = gnupg.GPG()
 key = gpg.list_keys().key_map['D13483D074B46132D15258655434DE21A921F55F']
-keyid=key['keyid']
-
-encrypted_message = gpg.encrypt(message, keyid)
+encrypted_message = gpg.encrypt(message, key['keyid'])
 print(encrypted_message.status)
 
+# write the encrypted message to a file
 with open("${ENCRYPTED_MESSAGE_FILE}", "w") as text_file:
     text_file.write(str(encrypted_message))
 
@@ -99,14 +90,16 @@ python3 << END_PYTHON
 
 import gnupg
 
-gpg = gnupg.GPG()
-
+# read the encrypted message from a file
 with open("${ENCRYPTED_MESSAGE_FILE}", "r") as encrypted_message_file:
     encrypted_message = encrypted_message_file.read()
 
+# decrypt the message using the private key
+gpg = gnupg.GPG()
 decrypted_data = gpg.decrypt(encrypted_message, passphrase='repro')
-
 print(decrypted_data.status)
+
+# print the decrypted message
 print()
 print(str(decrypted_data))
 
