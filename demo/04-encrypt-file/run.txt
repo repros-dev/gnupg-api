@@ -30,14 +30,29 @@ END_PYTHON
 
 ========== bash cell | list the imported public key using the gpg cli ==========
 
+echo Public keys:
+echo
 gpg --list-keys
+echo
+
+echo Private keys:
+echo
+gpg --list-secret-keys
+echo
+
 
 --------------------------------- cell outputs ---------------------------------
+Public keys:
+
 /mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.kbx
 ------------------------------------------------
 pub   rsa1024 2023-03-28 [SCEA]
       D13483D074B46132D15258655434DE21A921F55F
 uid           [ultimate] repro user <repro@repros.dev>
+
+
+Private keys:
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -77,26 +92,56 @@ encryption ok
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-=========== bash cell | import the private key for repro@repros.dev ============
+=========== bash cell | import the proviate key for repro@repros.dev ===========
 
-# import the private key file
-gpg --import --pinentry-mode loopback --passphrase=repro data/private.asc 2>&1
+python3 << END_PYTHON
 
-# list the gpg keys
-gpg --list-keys
+import gnupg
+
+# read the private key from the file
+with open("data/private.asc", "r") as private_key_file:
+    private_key_text = private_key_file.read()
+
+# import the public key and trust it
+gpg = gnupg.GPG()
+gpg.import_keys(private_key_text)
+
+END_PYTHON
 
 --------------------------------- cell outputs ---------------------------------
-gpg: key 5434DE21A921F55F: "repro user <repro@repros.dev>" not changed
-gpg: key 5434DE21A921F55F: secret key imported
-gpg: Total number processed: 1
-gpg:              unchanged: 1
-gpg:       secret keys read: 1
-gpg:   secret keys imported: 1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+========== bash cell | list the imported keys again using the gpg cli ==========
+
+echo Public keys:
+echo
+gpg --list-keys
+echo
+
+echo Private keys:
+echo
+gpg --list-secret-keys
+echo
+
+--------------------------------- cell outputs ---------------------------------
+Public keys:
+
 /mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.kbx
 ------------------------------------------------
 pub   rsa1024 2023-03-28 [SCEA]
       D13483D074B46132D15258655434DE21A921F55F
 uid           [ultimate] repro user <repro@repros.dev>
+
+
+Private keys:
+
+/mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.kbx
+------------------------------------------------
+sec   rsa1024 2023-03-28 [SCEA]
+      D13483D074B46132D15258655434DE21A921F55F
+uid           [ultimate] repro user <repro@repros.dev>
+
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

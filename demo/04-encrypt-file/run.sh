@@ -39,7 +39,16 @@ END_CELL
 
 bash_cell 'list the imported public key using the gpg cli' << END_CELL
 
+echo Public keys:
+echo
 gpg --list-keys
+echo
+
+echo Private keys:
+echo
+gpg --list-secret-keys
+echo
+
 
 END_CELL
 
@@ -73,15 +82,41 @@ END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'import the private key for repro@repros.dev' << END_CELL
+bash_cell 'import the proviate key for repro@repros.dev' << END_CELL
 
-# import the private key file
-gpg --import --pinentry-mode loopback --passphrase=repro ${PRIVATE_KEY_FILE} 2>&1
+python3 << END_PYTHON
 
-# list the gpg keys
-gpg --list-keys
+import gnupg
+
+# read the private key from the file
+with open("${PRIVATE_KEY_FILE}", "r") as private_key_file:
+    private_key_text = private_key_file.read()
+
+# import the public key and trust it
+gpg = gnupg.GPG()
+gpg.import_keys(private_key_text)
+
+END_PYTHON
 
 END_CELL
+
+
+# ------------------------------------------------------------------------------
+
+bash_cell 'list the imported keys again using the gpg cli' << END_CELL
+
+echo Public keys:
+echo
+gpg --list-keys
+echo
+
+echo Private keys:
+echo
+gpg --list-secret-keys
+echo
+
+END_CELL
+
 
 # ------------------------------------------------------------------------------
 bash_cell 'decrypt the message encrpted above' << END_CELL
