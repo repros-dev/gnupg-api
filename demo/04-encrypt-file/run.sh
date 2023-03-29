@@ -49,13 +49,12 @@ echo
 gpg --list-secret-keys
 echo
 
-
 END_CELL
 
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'encrypt a file using the public key' << END_CELL
+bash_cell 'encrypt a message using the public key' << END_CELL
 
 python3 << END_PYTHON
 
@@ -118,7 +117,7 @@ END_CELL
 
 
 # ------------------------------------------------------------------------------
-bash_cell 'decrypt the message encrpted above' << END_CELL
+bash_cell 'decrypt the message' << END_CELL
 
 python3 << END_PYTHON
 

@@ -40,7 +40,6 @@ echo
 gpg --list-secret-keys
 echo
 
-
 --------------------------------- cell outputs ---------------------------------
 Public keys:
 
@@ -57,7 +56,7 @@ Private keys:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-=============== bash cell | encrypt a file using the public key ================
+============== bash cell | encrypt a message using the public key ==============
 
 python3 << END_PYTHON
 
@@ -146,7 +145,7 @@ uid           [ultimate] repro user <repro@repros.dev>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-================ bash cell | decrypt the message encrpted above ================
+======================= bash cell | decrypt the message ========================
 
 python3 << END_PYTHON
 

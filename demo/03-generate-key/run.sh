@@ -38,15 +38,15 @@ bash_cell 'export the public key' << 'END_CELL'
 PUBLIC_KEY_FILE=tmp/public.pgp
 rm -f ${PUBLIC_KEY_FILE}
 
-# export the public key
 python3 << END_PYTHON
 
 import gnupg
-import os
 
+# export the public key
 gpg = gnupg.GPG()
 public_key = gpg.export_keys('repro@repros.dev')
 
+# write the public key to a file
 with open("tmp/public.pgp", "w") as text_file:
     text_file.write(public_key)
 
@@ -65,15 +65,15 @@ bash_cell 'export the private key' << 'END_CELL'
 PRIVATE_KEY_FILE=tmp/private.asc
 rm -f ${PRIVATE_KEY_FILE}
 
-# export the public key
 python3 << END_PYTHON
 
 import gnupg
-import os
 
+# export the public key
 gpg = gnupg.GPG()
 private_key = gpg.export_keys('repro@repros.dev', secret=True, passphrase='repro')
 
+# write the private key to a file
 with open("tmp/private.asc", "w") as text_file:
     text_file.write(private_key)
 
