@@ -10,20 +10,22 @@ END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'show gnupg package installation' << END_CELL
+bash_cell 'show python-gnupg pip installation' << END_CELL
 
-pip show gnupg
+pip show python-gnupg
 
 END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'load gnupg python package' << END_CELL
+bash_cell 'show python-gnu python package information' << END_CELL
 
 python3 << END_PYTHON
 
 import gnupg
-print(gnupg.__package__, gnupg.__version__,  gnupg.__file__)
+print("Version:", gnupg.__version__)
+print("Date:", gnupg.__date__)
+print("File:", gnupg.__file__)
 
 END_PYTHON
 

@@ -20,10 +20,10 @@ bash_cell 'import the public key for repro@repros.dev' << END_CELL
 
 python3 << END_PYTHON
 
-import pretty_bad_protocol as gnupg
+import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
 
 with open("${PUBLIC_KEY_FILE}", "r") as public_key_file:
     public_key_text = public_key_file.read()
@@ -32,9 +32,7 @@ gpg.import_keys(public_key_text)
 public_keys = gpg.list_keys()
 assert len(public_keys) == 1
 public_key = public_keys[0]
-
-print("uids        =", public_key['uids'][0])
-print("fingerprint =", public_key['fingerprint'])
+gpg.trust_keys(public_key['fingerprint'], 'TRUST_ULTIMATE')
 
 END_PYTHON
 
@@ -42,13 +40,14 @@ END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'list the imported public key' << END_CELL
+bash_cell 'list the imported public key using gpg command' << END_CELL
 
 # list the gpg keys
 echo
 gpg --list-keys
 
 END_CELL
+
 
 # ------------------------------------------------------------------------------
 
@@ -59,14 +58,24 @@ python3 << END_PYTHON
 import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
+
+gpg.import_keys_file("${PUBLIC_KEY_FILE}")
+public_keys = gpg.list_keys()
+public_key = public_keys[0]
+
 
 with open("${CLEAR_MESSAGE_FILE}", "r") as message_file:
     message = message_file.read()
-
 print(message)
 
-encrypted_message = gpg.encrypt(message, 'A168CC1B1D30CC9D079AD5FEA34F78D2B23714E8')
+key = gpg.list_keys().key_map['D13483D074B46132D15258655434DE21A921F55F']
+keyid=key['keyid']
+
+encrypted_message = gpg.encrypt(message, keyid)
+print(encrypted_message.status)
+
+print(str(encrypted_message))
 
 with open("${ENCRYPTED_MESSAGE_FILE}", "w") as text_file:
     text_file.write(str(encrypted_message))
@@ -89,31 +98,26 @@ gpg --list-keys
 
 END_CELL
 
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+bash_cell 'decrypt the message encrpted above' << END_CELL
 
-# #export GPG_TTY=$(tty)
+python3 << END_PYTHON
 
-# bash_cell 'decrypt the message encrpted above' << END_CELL
+import gnupg
 
-# python3 << END_PYTHON
+gpg = gnupg.GPG()
 
-# import pretty_bad_protocol as gnupg
-# import os
+with open("${ENCRYPTED_MESSAGE_FILE}", "r") as encrypted_message_file:
+    encrypted_message = encrypted_message_file.read()
 
-# gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+print(encrypted_message)
 
-# with open("${ENCRYPTED_MESSAGE_FILE}", "r") as encrypted_message_file:
-#     encrypted_message = encrypted_message_file.read()
+decrypted_data = gpg.decrypt(encrypted_message, passphrase='repro')
 
-# print(encrypted_message)
+print(decrypted_data.status)
+print()
+print(str(decrypted_data))
 
-# decrypted_data = gpg.decrypt(encrypted_message, passphrase='repro')
+END_PYTHON
 
-# print(dir(decrypted_data))
-# print(decrypted_data.status)
-# print(decrypted_data.__repr__)
-
-
-# END_PYTHON
-
-# END_CELL
+END_CELL

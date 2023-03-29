@@ -14,7 +14,7 @@ python3 << END_PYTHON
 import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
 key_settings = gpg.gen_key_input(
     key_type = 'RSA',
     key_length = 1024,
@@ -44,7 +44,7 @@ python3 << END_PYTHON
 import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
 public_key = gpg.export_keys('repro@repros.dev')
 
 with open("tmp/public.pgp", "w") as text_file:
@@ -57,29 +57,29 @@ gnupg-runtime.redact-key ${PUBLIC_KEY_FILE}
 
 END_CELL
 
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-# bash_cell 'export the private key' << 'END_CELL'
+bash_cell 'export the private key' << 'END_CELL'
 
-# # export the private key
-# PRIVATE_KEY_FILE=tmp/private.asc
-# rm -f ${PRIVATE_KEY_FILE}
+# export the private key
+PRIVATE_KEY_FILE=tmp/private.asc
+rm -f ${PRIVATE_KEY_FILE}
 
-# # export the public key
-# python3 << END_PYTHON
+# export the public key
+python3 << END_PYTHON
 
-# import gnupg
-# import os
+import gnupg
+import os
 
-# gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
-# private_key = gpg.export_keys('repro@repros.dev', secret=True, passphrase='repro')
+gpg = gnupg.GPG()
+private_key = gpg.export_keys('repro@repros.dev', secret=True, passphrase='repro')
 
-# with open("tmp/private.asc", "w") as text_file:
-#     text_file.write(private_key)
+with open("tmp/private.asc", "w") as text_file:
+    text_file.write(private_key)
 
-# END_PYTHON
+END_PYTHON
 
-# # print a redacted view of the private key
-# gnupg-runtime.redact-key ${PRIVATE_KEY_FILE}
+# print a redacted view of the private key
+gnupg-runtime.redact-key ${PRIVATE_KEY_FILE}
 
-# END_CELL
+END_CELL

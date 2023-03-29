@@ -11,10 +11,10 @@ gnupg-runtime.purge-keys
 
 python3 << END_PYTHON
 
-import pretty_bad_protocol as gnupg
+import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
 
 with open("data/public.gpg", "r") as public_key_file:
     public_key_text = public_key_file.read()
@@ -23,9 +23,7 @@ gpg.import_keys(public_key_text)
 public_keys = gpg.list_keys()
 assert len(public_keys) == 1
 public_key = public_keys[0]
-
-print("uids        =", public_key['uids'][0])
-print("fingerprint =", public_key['fingerprint'])
+gpg.trust_keys(public_key['fingerprint'], 'TRUST_ULTIMATE')
 
 END_PYTHON
 
@@ -33,13 +31,19 @@ END_PYTHON
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-=================== bash cell | list the imported public key ===================
+========== bash cell | list the imported public key using gpg command ==========
 
 # list the gpg keys
 echo
 gpg --list-keys
 
 --------------------------------- cell outputs ---------------------------------
+
+/mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.kbx
+------------------------------------------------
+pub   rsa1024 2023-03-28 [SCEA]
+      D13483D074B46132D15258655434DE21A921F55F
+uid           [ultimate] repro user <repro@repros.dev>
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -51,14 +55,24 @@ python3 << END_PYTHON
 import gnupg
 import os
 
-gpg = gnupg.GPG(homedir=os.environ.get("GNUPGHOME"))
+gpg = gnupg.GPG()
+
+gpg.import_keys_file("data/public.gpg")
+public_keys = gpg.list_keys()
+public_key = public_keys[0]
+
 
 with open("data/message.txt", "r") as message_file:
     message = message_file.read()
-
 print(message)
 
-encrypted_message = gpg.encrypt(message, 'A168CC1B1D30CC9D079AD5FEA34F78D2B23714E8')
+key = gpg.list_keys().key_map['D13483D074B46132D15258655434DE21A921F55F']
+keyid=key['keyid']
+
+encrypted_message = gpg.encrypt(message, keyid)
+print(encrypted_message.status)
+
+print(str(encrypted_message))
 
 with open("tmp/encrypted_message.asc", "w") as text_file:
     text_file.write(str(encrypted_message))
@@ -75,6 +89,38 @@ ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse
 cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+encryption ok
+-----BEGIN PGP MESSAGE-----
+
+hIwDVDTeIakh9V8BA/4sW9960UxqwoDnkSj9hljBzvPynId2Hj2Jk7XIppgazJ4l
+qmMaWNQvz77brCLRA+APcx2F+SZbDJlV2l6XRl4+ZBzXbE64ek3WncxxNJBHy4jL
+Mur7Jht6eMUrzJ8bJ+432klKWN0iKhu5zhIxxoq2Hn1PkjVgrydQq52uF5oP5NLA
+kQGr7h4N1uFLBUW9Pl1lqu7WgeKscKOHARPNXDqFCKFfaTGEpuUNxoBslgXsffRc
+BzSFlNfWwCggVC4dOjzZd860So/wg59MgxvzU4muO+Y3iE5gIC8Fnc6oTeCkMryR
+6aNlx8wYaof3/8X6/kmrQCjGDSuOReLiS51+ikJaE+FuEZb9bz1ppXxzhSbweiWo
+IJPTMH04njW8esC9XYEEeotEANby1OhlXMmeO0/1gxrsKkJzn5TkSwEJbjoOjv59
+UeZgXBhYzvuGJL27i/oFuwgrSXEe6xLjoT4z0m0J8mMGEpJRYL+rHpCdBsfzzgtn
+7N87B1o1ucSeoj3/57orNvBr5qlzTXcdBvb1zn7ockm0JfFOwqJFi7B3q+NgaVHU
+hSOuQUMcXvR/C/nDove/gah/MiaSay6T7FhW14YYYo4oWA5h4fBmOVYoz29uBcPg
+nTc=
+=U6fb
+-----END PGP MESSAGE-----
+
+-----BEGIN PGP MESSAGE-----
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxx
+xxxxx
+-----END PGP MESSAGE-----
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -87,17 +133,67 @@ gpg --import --pinentry-mode loopback --passphrase=repro data/private.asc 2>&1
 gpg --list-keys
 
 --------------------------------- cell outputs ---------------------------------
-gpg: key A34F78D2B23714E8: public key "repro user <repro@repros.dev>" imported
-gpg: key A34F78D2B23714E8: secret key imported
+gpg: key 5434DE21A921F55F: "repro user <repro@repros.dev>" not changed
+gpg: key 5434DE21A921F55F: secret key imported
 gpg: Total number processed: 1
-gpg:               imported: 1
+gpg:              unchanged: 1
 gpg:       secret keys read: 1
 gpg:   secret keys imported: 1
-/mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.gpg
+/mnt/gnupg-api/.gnupg-runtime/.gnupg/pubring.kbx
 ------------------------------------------------
-pub   rsa1024 2023-03-14 [SCEA]
-      A168CC1B1D30CC9D079AD5FEA34F78D2B23714E8
-uid           [ unknown] repro user <repro@repros.dev>
+pub   rsa1024 2023-03-28 [SCEA]
+      D13483D074B46132D15258655434DE21A921F55F
+uid           [ultimate] repro user <repro@repros.dev>
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+================ bash cell | decrypt the message encrpted above ================
+
+python3 << END_PYTHON
+
+import gnupg
+
+gpg = gnupg.GPG()
+
+with open("tmp/encrypted_message.asc", "r") as encrypted_message_file:
+    encrypted_message = encrypted_message_file.read()
+
+print(encrypted_message)
+
+decrypted_data = gpg.decrypt(encrypted_message, passphrase='repro')
+
+print(decrypted_data.status)
+print()
+print(str(decrypted_data))
+
+END_PYTHON
+
+--------------------------------- cell outputs ---------------------------------
+-----BEGIN PGP MESSAGE-----
+
+hIwDVDTeIakh9V8BA/4sW9960UxqwoDnkSj9hljBzvPynId2Hj2Jk7XIppgazJ4l
+qmMaWNQvz77brCLRA+APcx2F+SZbDJlV2l6XRl4+ZBzXbE64ek3WncxxNJBHy4jL
+Mur7Jht6eMUrzJ8bJ+432klKWN0iKhu5zhIxxoq2Hn1PkjVgrydQq52uF5oP5NLA
+kQGr7h4N1uFLBUW9Pl1lqu7WgeKscKOHARPNXDqFCKFfaTGEpuUNxoBslgXsffRc
+BzSFlNfWwCggVC4dOjzZd860So/wg59MgxvzU4muO+Y3iE5gIC8Fnc6oTeCkMryR
+6aNlx8wYaof3/8X6/kmrQCjGDSuOReLiS51+ikJaE+FuEZb9bz1ppXxzhSbweiWo
+IJPTMH04njW8esC9XYEEeotEANby1OhlXMmeO0/1gxrsKkJzn5TkSwEJbjoOjv59
+UeZgXBhYzvuGJL27i/oFuwgrSXEe6xLjoT4z0m0J8mMGEpJRYL+rHpCdBsfzzgtn
+7N87B1o1ucSeoj3/57orNvBr5qlzTXcdBvb1zn7ockm0JfFOwqJFi7B3q+NgaVHU
+hSOuQUMcXvR/C/nDove/gah/MiaSay6T7FhW14YYYo4oWA5h4fBmOVYoz29uBcPg
+nTc=
+=U6fb
+-----END PGP MESSAGE-----
+
+decryption ok
+
+Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor
+incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
