@@ -1,0 +1,54 @@
+
+------- Cleaning example 01-gnupg-version/ ----------------
+removed './run.txt'
+removed './tmp/show gpg program version.sh'
+removed './tmp/show gpg program version.txt'
+removed './tmp/show python-gnu python package information.sh'
+removed './tmp/show python-gnu python package information.txt'
+removed './tmp/show python-gnupg pip installation.sh'
+removed './tmp/show python-gnupg pip installation.txt'
+rmdir: removing directory, './tmp'
+rmdir: removing directory, './products'
+
+------- Cleaning example 02-homedir-api/ ----------------
+removed './run.txt'
+removed './tmp/use constructor argument to specify custom home directory.sh'
+removed './tmp/use constructor argument to specify custom home directory.txt'
+removed './tmp/use python-gnupg default home directory.sh'
+removed './tmp/use python-gnupg default home directory.txt'
+removed './tmp/use standard GNUPGHOME variable to specify custom home directory.sh'
+removed './tmp/use standard GNUPGHOME variable to specify custom home directory.txt'
+rmdir: removing directory, './tmp'
+rmdir: failed to remove './tmp': Directory not empty
+make[2]: *** [/mnt/gnupg-api/.shell-notebook/Makefile.demo-runner:42: clean] Error 1
+
+------- Cleaning example 03-generate-key/ ----------------
+removed './run.txt'
+removed './tmp/export the private key.sh'
+removed './tmp/export the private key.txt'
+removed './tmp/export the public key.sh'
+removed './tmp/export the public key.txt'
+removed './tmp/generate a key pair.sh'
+removed './tmp/generate a key pair.txt'
+removed './tmp/private.asc'
+removed './tmp/public.pgp'
+rmdir: removing directory, './tmp'
+rmdir: removing directory, './products'
+
+------- Cleaning example 04-encrypt-file/ ----------------
+removed './run.txt'
+removed './tmp/decrypt the message encrpted above.sh'
+removed './tmp/decrypt the message encrpted above.txt'
+removed './tmp/delete the gnupg home directory and keys.sh'
+removed './tmp/delete the gnupg home directory and keys.txt'
+removed './tmp/encrypt a file using the public key.sh'
+removed './tmp/encrypt a file using the public key.txt'
+removed './tmp/encrypted_message.asc'
+removed './tmp/import the private key for repro@repros.dev.sh'
+removed './tmp/import the private key for repro@repros.dev.txt'
+removed './tmp/import the public key for repro@repros.dev.sh'
+removed './tmp/import the public key for repro@repros.dev.txt'
+removed './tmp/list the imported public key using gpg command.sh'
+removed './tmp/list the imported public key using gpg command.txt'
+rmdir: removing directory, './tmp'
+rmdir: removing directory, './products'

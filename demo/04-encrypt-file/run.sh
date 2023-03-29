@@ -2,7 +2,7 @@
 
 PUBLIC_KEY_FILE=data/public.gpg
 PRIVATE_KEY_FILE=data/private.asc
-CLEAR_MESSAGE_FILE=data/message.txt
+MESSAGE_FILE=data/message.txt
 ENCRYPTED_MESSAGE_FILE=tmp/encrypted_message.asc
 
 # ------------------------------------------------------------------------------
@@ -61,11 +61,9 @@ import os
 gpg = gnupg.GPG()
 
 gpg.import_keys_file("${PUBLIC_KEY_FILE}")
-public_keys = gpg.list_keys()
-public_key = public_keys[0]
+public_key = gpg.list_keys()[0]
 
-
-with open("${CLEAR_MESSAGE_FILE}", "r") as message_file:
+with open("${MESSAGE_FILE}", "r") as message_file:
     message = message_file.read()
 print(message)
 
@@ -75,14 +73,10 @@ keyid=key['keyid']
 encrypted_message = gpg.encrypt(message, keyid)
 print(encrypted_message.status)
 
-print(str(encrypted_message))
-
 with open("${ENCRYPTED_MESSAGE_FILE}", "w") as text_file:
     text_file.write(str(encrypted_message))
 
 END_PYTHON
-
-gnupg-runtime.redact-key ${ENCRYPTED_MESSAGE_FILE}
 
 END_CELL
 
@@ -109,8 +103,6 @@ gpg = gnupg.GPG()
 
 with open("${ENCRYPTED_MESSAGE_FILE}", "r") as encrypted_message_file:
     encrypted_message = encrypted_message_file.read()
-
-print(encrypted_message)
 
 decrypted_data = gpg.decrypt(encrypted_message, passphrase='repro')
 

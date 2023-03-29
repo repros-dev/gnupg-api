@@ -6,10 +6,19 @@ I MESG Building PATH variable
 I MESG Initializing modules
 I MESG Initializing module 'repro'
 I MESG Initializing trim files for module 'repro'
-I MESG Ensuring that the REPRO target mapping file exists (/mnt/repro-template/.repro/repro-targets)
+I MESG Initializing module 'gnupg-api'
+I MESG Initializing trim files for module 'gnupg-api'
+I MESG Initializing module 'gnupg-runtime'
+I MESG Initializing trim files for module 'gnupg-runtime'
+I MESG Initializing module 'python-dev'
+I MESG Initializing trim files for module 'python-dev'
+I MESG Initializing module 'shell-notebook'
+I MESG Initializing trim files for module 'shell-notebook'
+I MESG Ensuring other files listed in the 'shell-notebook' module trim manifest are in the module trim directory (/mnt/gnupg-api/.shell-notebook)
+I MESG Ensuring that the REPRO target mapping file exists (/mnt/gnupg-api/.repro/repro-targets)
 I MESG Starting services during session initialization because REPRO_SERVICES_STARTUP set to 'auto'
 I MESG Invoking implementations of REPRO target 'start-services'
 I MESG No implementations of the 'start-services' REPRO target were found
 I MESG Done initializing REPRO session
 I MESG Invoking implementations of REPRO target 'clean-demo'
-I MESG No implementations of the 'clean-demo' REPRO target were found
+I MESG Invoking the 'gnupg-api:demo:clean' target

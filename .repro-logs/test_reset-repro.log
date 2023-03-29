@@ -8,5 +8,18 @@ I MESG Resetting REPRO
 I MESG Resetting all modules
 I MESG Resetting the 'repro' module
 I MESG Re-initializing trim files for module 'repro'
-I MESG Resetting the REPRO target mapping file (/mnt/repro-template/.repro/repro-targets)
-I MESG Installing a default (empty) target mapping file to /mnt/repro-template/.repro/repro-targets
+I MESG Resetting the 'gnupg-api' module
+I MESG Re-initializing trim files for module 'gnupg-api'
+I MESG Copying /home/repro/repro-modules/gnupg-api-exports/demo-makefile to the 'gnupg-api' trim directory (/mnt/gnupg-api/.gnupg-api)
+I MESG Resetting the 'gnupg-runtime' module
+I MESG Re-initializing trim files for module 'gnupg-runtime'
+I MESG Resetting the 'python-dev' module
+I MESG Re-initializing trim files for module 'python-dev'
+I MESG Resetting the 'shell-notebook' module
+I MESG Re-initializing trim files for module 'shell-notebook'
+I MESG Ensuring other files listed in the 'shell-notebook' module trim manifest are in the module trim directory (/mnt/gnupg-api/.shell-notebook)
+I MESG Copying trim file Makefile.demo-runner from /home/repro/repro-modules/shell-notebook-master to /mnt/gnupg-api/.shell-notebook
+I MESG Resetting the REPRO target mapping file (/mnt/gnupg-api/.repro/repro-targets)
+I MESG Installing a default (empty) target mapping file to /mnt/gnupg-api/.repro/repro-targets
+I MESG Mapping the 'gnupg-api:demo:run' target to the REPRO 'run-demo' target
+I MESG Mapping the 'gnupg-api:demo:clean' target to the REPRO 'clean-demo' target
