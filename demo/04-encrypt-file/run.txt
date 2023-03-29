@@ -92,7 +92,7 @@ encryption ok
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-=========== bash cell | import the proviate key for repro@repros.dev ===========
+=========== bash cell | import the private key for repro@repros.dev ============
 
 python3 << END_PYTHON
 
@@ -102,7 +102,7 @@ import gnupg
 with open("data/private.asc", "r") as private_key_file:
     private_key_text = private_key_file.read()
 
-# import the public key and trust it
+# import the private key
 gpg = gnupg.GPG()
 gpg.import_keys(private_key_text)
 

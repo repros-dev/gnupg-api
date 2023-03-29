@@ -82,7 +82,7 @@ END_CELL
 
 # ------------------------------------------------------------------------------
 
-bash_cell 'import the proviate key for repro@repros.dev' << END_CELL
+bash_cell 'import the private key for repro@repros.dev' << END_CELL
 
 python3 << END_PYTHON
 
@@ -92,14 +92,13 @@ import gnupg
 with open("${PRIVATE_KEY_FILE}", "r") as private_key_file:
     private_key_text = private_key_file.read()
 
-# import the public key and trust it
+# import the private key
 gpg = gnupg.GPG()
 gpg.import_keys(private_key_text)
 
 END_PYTHON
 
 END_CELL
-
 
 # ------------------------------------------------------------------------------
 
